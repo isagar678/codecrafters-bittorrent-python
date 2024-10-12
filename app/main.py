@@ -26,12 +26,9 @@ def decode_bencode(bencoded_value):
 
 def main():
     command = sys.argv[1]
-
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
-    # print("Logs from your program will appear here!")
-
+    
     if command == "decode":
-        bencoded_value = sys.argv[2].encode()
+        bencoded_value = sys.argv[2].encode()  # Encode only if needed
 
         # json.dumps() can't handle bytes, but bencoded "strings" need to be
         # bytestrings since they might contain non utf-8 characters.
@@ -39,23 +36,27 @@ def main():
         # Let's convert them to strings for printing to the console.
         def bytes_to_str(data):
             if isinstance(data, bytes):
-                return data.decode()
-
+                return data.decode('utf-8', errors='ignore')  # Use error handling for decode
             raise TypeError(f"Type not serializable: {type(data)}")
 
         # Uncomment this block to pass the first stage
         print(json.dumps(decode_bencode(bencoded_value), default=bytes_to_str))
-    elif command=="info":
-        file_name=sys.argv[2]
-        with open(file_name,"rb") as torrent_file:
-            bencoded_content=torrent_file.read()
-        torrent=decode_bencode(bencoded_content)
-        print("Tracker URL:", torrent["announce"].decode("utf-8"))
-        print("Length:", torrent["info"]["length"])
+
+    elif command == "info":
+        file_name = sys.argv[2]
+        with open(file_name, "rb") as torrent_file:
+            bencoded_content = torrent_file.read()
+        torrent = decode_bencode(bencoded_content)
+        
+        # Handle missing keys with .get()
+        print("Tracker URL:", torrent.get("announce", b"Unknown tracker URL").decode('utf-8', errors='ignore'))
+        print("Length:", torrent.get("info", {}).get("length", "Unknown length"))
 
     else:
-        raise NotImplementedError(f"Unknown command {command}")
+        raise NotImplementedError(f"Unknown command {command}. Valid commands are 'decode' and 'info'.")
 
+if __name__ == "__main__":
+    main()
 
 if __name__ == "__main__":
     main()

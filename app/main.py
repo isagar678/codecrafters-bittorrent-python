@@ -4,7 +4,6 @@ import bencodepy
 
 # Manual decoding functions
 def decode_string(bencoded_value, start_index):
-    """Manually decode a bencoded string."""
     if not chr(bencoded_value[start_index]).isdigit():
         raise ValueError("Invalid encoded string", bencoded_value, start_index)
     
@@ -19,7 +18,6 @@ def decode_string(bencoded_value, start_index):
     return bencoded_value[word_start:word_end], word_end
 
 def decode_integer(bencoded_value, start_index):
-    """Manually decode a bencoded integer."""
     if chr(bencoded_value[start_index]) != "i":
         raise ValueError("Invalid encoded integer", bencoded_value, start_index)
     
@@ -30,7 +28,6 @@ def decode_integer(bencoded_value, start_index):
     return int(bencoded_value[start_index+1:end_marker]), end_marker + 1
 
 def decode_list(bencoded_value, start_index):
-    """Manually decode a bencoded list."""
     if chr(bencoded_value[start_index]) != "l":
         raise ValueError("Invalid encoded list", bencoded_value, start_index)
     
@@ -44,7 +41,6 @@ def decode_list(bencoded_value, start_index):
     return values, current_index + 1
 
 def decode_dict(bencoded_value, start_index):
-    """Manually decode a bencoded dictionary."""
     if chr(bencoded_value[start_index]) != "d":
         raise ValueError("Invalid encoded dictionary", bencoded_value, start_index)
     
@@ -59,7 +55,6 @@ def decode_dict(bencoded_value, start_index):
     return values, current_index
 
 def decode_part(bencoded_value, start_index):
-    """Dispatches decoding based on the first character."""
     if chr(bencoded_value[start_index]).isdigit():
         return decode_string(bencoded_value, start_index)
     elif chr(bencoded_value[start_index]) == "i":
@@ -88,7 +83,7 @@ def main():
 
         def bytes_to_str(data):
             if isinstance(data, bytes):
-                return data.decode(errors='replace')  # Graceful handling of decode errors
+                return data.decode(errors='replace')
             raise TypeError(f"Type not serializable: {type(data)}")
 
         print(json.dumps(decode_bencode(bencoded_value), default=bytes_to_str))
@@ -99,8 +94,20 @@ def main():
             bencoded_content = torrent_file.read()
         
         torrent = decode_bencode(bencoded_content)
-        print("Tracker URL:", torrent["announce"].decode('utf-8'))
-        print("Length:", torrent["info"]["length"])
+        
+        # Check if 'announce' and 'info' are present
+        announce = torrent.get("announce", None)
+        if announce:
+            print("Tracker URL:", announce.decode('utf-8'))
+        else:
+            print("No 'announce' key found in the torrent file.")
+        
+        # Check if 'info' and 'length' are present
+        info = torrent.get("info", None)
+        if info and "length" in info:
+            print("Length:", info["length"])
+        else:
+            print("No 'info' key or 'length' field found in the torrent file.")
 
     else:
         raise NotImplementedError(f"Unknown command {command}")

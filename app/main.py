@@ -50,7 +50,7 @@ def main():
         with open(file_name,"rb") as torrent_file:
             bencoded_content=torrent_file.read()
         torrent=decode_bencode(bencoded_content)
-        print("Tracker URL:", torrent["announce"])
+        print("Tracker URL:", torrent["announce"].decode('utf-8'))
         print("Length:", torrent["info"]["length"])
 
     else:

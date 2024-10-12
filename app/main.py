@@ -49,9 +49,9 @@ def main():
         file_name=sys.argv[2]
         with open(file_name,"rb") as torrent_file:
             bencoded_content=torrent_file.read()
-            decoded_content=decode_bencode(bencoded_content)
-            print("Tracker URL:", decoded_content["announce"].decode())
-            print("Length:", decoded_content["info"]["length"])
+        decoded_content=decode_bencode(bencoded_content)
+        print("Tracker URL:", decoded_content["announce"].decode())
+        print("Length:", decoded_content["info"]["length"])
 
     else:
         raise NotImplementedError(f"Unknown command {command}")

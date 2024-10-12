@@ -16,8 +16,11 @@ def decode_bencode(bencoded_value):
         return bencoded_value[first_colon_index+1:]
     elif chr(bencoded_value[0])=='i' and chr(bencoded_value[-1])=='e':
         return int(bencoded_value[1:-1])
-    else:
+    elif chr(bencoded_value[0])=='l' and chr(bencoded_value[-1])=='e':
         return bencodepy.Bencode(bencoded_value)
+    else:
+        raise NotImplementedError("Only strings are supported at the moment")
+
 
 def main():
     command = sys.argv[1]

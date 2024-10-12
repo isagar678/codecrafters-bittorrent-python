@@ -77,10 +77,9 @@ def main():
         torrent_data = decode_bencode(bencoded_content)
         
         # Extract and print the "announce" key (tracker URL)
-        if "announce" in torrent_data:
-            print("Tracker URL:", torrent_data["announce"].decode('utf-8'))
-        else:
-            print("No 'announce' key found in the torrent file.")
+        
+        print("Tracker URL:", torrent_data["announce"].decode('utf-8'))
+        
         
         # Extract and print the "length" field from the "info" dictionary
         if "info" in torrent_data and "length" in torrent_data["info"]:

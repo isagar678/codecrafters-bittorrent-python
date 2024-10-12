@@ -69,6 +69,7 @@ def decode_part(bencoded_value, start_index):
 # Bencodepy decoder wrapper with manual fallbacks
 def decode_bencode(bencoded_value):
     try:
+        # Attempt to decode with bencodepy first
         return bencodepy.decode(bencoded_value)
     except bencodepy.exceptions.BencodeDecodeError:
         # Fallback to manual decoding in case bencodepy fails
@@ -96,19 +97,16 @@ def main():
         torrent = decode_bencode(bencoded_content)
         
         # Check if 'announce' and 'info' are present
-        announce = torrent.get("announce", None)
-        if announce:
-            print("Tracker URL:", announce.decode('utf-8'))
+        if "announce" in torrent:
+            print("Tracker URL:", torrent["announce"].decode('utf-8'))
         else:
-            print("No 'announce' key found in the torrent file.")
-        
-        # Check if 'info' and 'length' are present
-        info = torrent.get("info", None)
-        if info and "length" in info:
-            print("Length:", info["length"])
-        else:
-            print("No 'info' key or 'length' field found in the torrent file.")
+            raise ValueError("Torrent file does not contain 'announce' key.")
 
+        if "info" in torrent and "length" in torrent["info"]:
+            print("Length:", torrent["info"]["length"])
+        else:
+            raise ValueError("Torrent file does not contain 'info' or 'length' field.")
+    
     else:
         raise NotImplementedError(f"Unknown command {command}")
 

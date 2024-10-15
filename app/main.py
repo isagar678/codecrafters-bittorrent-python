@@ -81,8 +81,8 @@ def main():
             bencoded_content = torrent_file.read()
         torrent = decode_bencode(bencoded_content)
         info_hashed=hashlib.sha1(bencodepy.encode(torrent[b"info"])).hexdigest()
-        # print("Tracker URL:", torrent["announce"].decode())
-        # print("Length:", torrent["info"]["length"])
+        print("Tracker URL:", torrent["announce"].decode())
+        print("Length:", torrent["info"]["length"])
         print("Info Hash:",info_hashed)
     else:
         raise NotImplementedError(f"Unknown command {command}")

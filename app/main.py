@@ -95,9 +95,10 @@ def main():
         print("Info Hash:",info_hashed)
         print("Piece Length:",torrent["info"]["piece length"])
         print('Piece Hashes:')
-        for i in torrent["info"]["pieces"]:
-            
-            print(i.hex())
+        for i in range(0, len(torrent["info"]["pieces"]), 20):
+            piece_hash = torrent["info"]["pieces"][i:i + 20]
+            print(piece_hash.hex())
+
     else:
         raise NotImplementedError(f"Unknown command {command}")
 if __name__ == "__main__":

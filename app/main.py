@@ -93,6 +93,10 @@ def main():
         print("Tracker URL:", torrent["announce"].decode())
         print("Length:", torrent["info"]["length"])
         print("Info Hash:",info_hashed)
+        print("Piece Length:",torrent["info"]["piece length"])
+        print('Piece Hashes:')
+        for i in torrent["info"]["pieces"]:
+            print(i)
     else:
         raise NotImplementedError(f"Unknown command {command}")
 if __name__ == "__main__":

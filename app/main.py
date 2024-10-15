@@ -96,7 +96,7 @@ def main():
         print("Piece Length:",torrent["info"]["piece length"])
         print('Piece Hashes:')
         for i in torrent["info"]["pieces"]:
-            print(i)
+            print(hashlib.sha1(i).hexdigest())
     else:
         raise NotImplementedError(f"Unknown command {command}")
 if __name__ == "__main__":

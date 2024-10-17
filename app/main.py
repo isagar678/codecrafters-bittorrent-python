@@ -129,7 +129,7 @@ def main():
             if isinstance(peers, bytes):  # Ensure it’s a bytes object
             # Process the compact peer format
                 for i in range(0, len(peers), 6):
-                    ip = ".".join(str(b) for b in peers[i:i + 4])
+                    ip = ".".join(str(b) for b in peers[i:i + 6])
                     port = int.from_bytes(peers[i + 4:i + 6], byteorder='big')
                     print(f"Peer: {ip}:{port}")
             else:

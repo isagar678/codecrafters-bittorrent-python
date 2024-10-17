@@ -104,11 +104,9 @@ def main():
         with open(file_name,"rb") as torrent_file:
             bencoded_content=torrent_file.read()
         torrent=decode_bencode(bencoded_content)
-        if "info" in torrent:
-            info = torrent["info"]
-        elif b"info" in torrent:
-            info = torrent[b"info"]
-        info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
+        info_dict = torrent.get("info", {})
+        bencoded_info = bencodepy.encode(info_dict)
+        info_hashed = hashlib.sha1(bencoded_info).digest()
         url=torrent["announce"].decode()
         query_params={
             "info_hash":info_hashed,

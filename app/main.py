@@ -105,38 +105,23 @@ def main():
         with open(file_name, "rb") as torrent_file:
             bencoded_content = torrent_file.read()
         torrent = decode_bencode(bencoded_content)
-    
-        info_dict = torrent.get("info", {})
-        bencoded_info = bencodepy.encode(info_dict)
-        info_hashed = hashlib.sha1(bencoded_info).digest()
         url = torrent["announce"].decode()
-    
-        query_params = {
-            "info_hash": info_hashed,
-            "peer_id": "00112233445566778899",
-            "port": 6881,
-            "uploaded": 0,
-            "downloaded": 0,
-            "left": torrent.get("info", {}).get("length", 0),
-            "compact": 1
-        }
-    
-        response = requests.get(url, params=query_params)
-        if response.status_code == 200:
-        # Update this line to capture only one return value
-            peers = decode_bencode(response.content)
-        
-        # Assuming peers is in the expected format, process it
-              # Ensure it’s a bytes object
-            # Process the compact peer format
-            for i in range(0, len(peers), 6):
-                peer = peers[i : i + 6]
-                ip_address = f"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}"
-                port = int.from_bytes(peer[4:], byteorder="big", signed=False)
-                print(f"{ip_address}:{port}")
-            
-        else:
-            print(f"Error: Unable to retrieve peers. Status code: {response.status_code}")
+        query_params = dict(
+            info_hash=hashlib.sha1(bencodepy.encode(torrent["info"])).digest(),
+            peer_id="00112233445566778899",
+            port=6881,
+            uploaded=0,
+            downloaded=0,
+            left=torrent["info"]["length"],
+            compact=1,
+        )
+        response = decode_bencode(requests.get(url, query_params).content)
+        peers = response["peers"]
+        for i in range(0, len(peers), 6):
+            peer = peers[i : i + 6]
+            ip_address = f"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}"
+            port = int.from_bytes(peer[4:], byteorder="big", signed=False)
+            print(f"{ip_address}:{port}")
 
     
 

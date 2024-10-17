@@ -112,7 +112,7 @@ def main():
     
         query_params = {
             "info_hash": info_hashed,
-         "peer_id": "00112233445566778899",
+         "peer_id": "00112233445566978899",
             "port": 6881,
             "uploaded": 0,
             "downloaded": 0,

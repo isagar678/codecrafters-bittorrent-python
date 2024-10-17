@@ -109,7 +109,7 @@ def main():
             info = torrent["info"]
         elif b"info" in torrent:
             info = torrent[b"info"]
-        info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
+        # info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
         url=torrent["announce"].decode()
         query_params={
             "info_hash":hashlib.sha1(bencode(torrent["info"])).digest(),

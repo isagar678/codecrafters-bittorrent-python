@@ -130,11 +130,11 @@ def main():
               # Ensure it’s a bytes object
             # Process the compact peer format
             for i in range(0, len(peers), 6):
-                ip = ".".join(str(b) for b in peers[i:i + 4])
-                port = int.from_bytes(peers[i + 4:i + 6], byteorder='big')
-                print(f"Peer: {ip}:{port}")
-            else:
-                print("Error: Expected byte string for peers, got:", type(peers))
+                peer = peers[i : i + 6]
+                ip_address = f"{peer[0]}.{peer[1]}.{peer[2]}.{peer[3]}"
+                port = int.from_bytes(peer[4:], byteorder="big", signed=False)
+                print(f"{ip_address}:{port}")
+            
         else:
             print(f"Error: Unable to retrieve peers. Status code: {response.status_code}")
 

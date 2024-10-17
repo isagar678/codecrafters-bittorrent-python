@@ -2,6 +2,7 @@ import json
 import sys
 import hashlib
 import bencodepy 
+import requests
 # import requests - available if you need it!
 import hashlib
 def decode_part(value, start_index):
@@ -98,6 +99,33 @@ def main():
         for i in range(0, len(torrent["info"]["pieces"]), 20):
             piece_hash = torrent["info"]["pieces"][i:i + 20]
             print(piece_hash.hex())
+    elif command=="peers":
+        file_name=sys.argv[2]
+        with open(file_name,"rb") as torrent_file:
+            bencoded_content=torrent_file.read()
+        torrent=decode_bencode(bencoded_content)
+        if "info" in torrent:
+            info = torrent["info"]
+        elif b"info" in torrent:
+            info = torrent[b"info"]
+        info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
+        url=torrent["announce"].decode()
+        query_params={
+            "info_hash":info_hashed,
+            "port":6881,
+            "peer_id": "00112233445566778899",
+            "uploaded":0,
+            "downloaded":0,
+            "left":torrent["info"]["piece length"],
+            "compact":1
+        }
+        response=requests.get(url=url,params=query_params)
+        interval,peers=decode_bencode(response.content)
+        for i in range(0, len(peers), 6):
+            ip = ".".join(str(b) for b in peers[i : i + 4])
+            port = int.from_bytes(peers[i + 4 : i + 6], byteorder='big')
+            print(f"Peer: {ip}:{port}")
+
 
     else:
         raise NotImplementedError(f"Unknown command {command}")

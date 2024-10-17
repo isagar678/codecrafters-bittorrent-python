@@ -119,7 +119,7 @@ def main():
             "left":torrent["info"]["piece length"],
             "compact":1
         }
-        response=requests.get(url=url,params=query_params)
+        response=requests.get(url,query_params)
         interval,peers=decode_bencode(response.content)
         for i in range(0, len(peers), 6):
             ip = ".".join(str(b) for b in peers[i : i + 4])

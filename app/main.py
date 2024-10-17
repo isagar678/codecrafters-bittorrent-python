@@ -129,7 +129,7 @@ def main():
         (ip, port) = sys.argv[3].split(":")
         with open(file_name, "rb") as file:
             parsed = decode_bencode(file.read())
-            info = parsed[b"info"]
+            info = parsed["info"]
             bencoded_info = bencodepy.encode(info)
             info_hash = hashlib.sha1(bencoded_info).digest()
             handshake = (

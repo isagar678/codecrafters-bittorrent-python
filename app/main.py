@@ -110,14 +110,14 @@ def main():
         url=torrent["announce"].decode()
         query_params={
             "info_hash":info_hashed,
-            "port":6881,
             "peer_id": "00112233445566778899",
+            "port":6881,
             "uploaded":0,
             "downloaded":0,
-            "left":torrent["info"]["length"],
+            "left": torrent.get("info", {}).get("length", 0),
             "compact":1
         }
-        response=requests.get(url,query_params)
+        response=requests.get(url,params=query_params)
         peers,_=decode_bencode(response.content)
         for i in range(0, len(peers), 6):
             ip = ".".join(str(b) for b in peers[i : i + 4])

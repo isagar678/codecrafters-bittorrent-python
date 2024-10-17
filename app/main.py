@@ -126,10 +126,14 @@ def main():
             peers = decode_bencode(response.content)
         
         # Assuming peers is in the expected format, process it
-            for i in range(0, len(peers), 6):
-                ip = ".".join(str(b) for b in peers[i:i + 4])
-                port = int.from_bytes(peers[i + 4:i + 6], byteorder='big')
-                print(f"Peer: {ip}:{port}")
+            if isinstance(peers, bytes):  # Ensure it’s a bytes object
+            # Process the compact peer format
+                for i in range(0, len(peers), 6):
+                    ip = ".".join(str(b) for b in peers[i:i + 4])
+                    port = int.from_bytes(peers[i + 4:i + 6], byteorder='big')
+                    print(f"Peer: {ip}:{port}")
+            else:
+                print("Error: Expected byte string for peers, got:", type(peers))
         else:
             print(f"Error: Unable to retrieve peers. Status code: {response.status_code}")
 

@@ -1,7 +1,6 @@
 import json
 import sys
 import hashlib
-import bencode
 import bencodepy 
 import requests
 # import requests - available if you need it!
@@ -109,10 +108,10 @@ def main():
             info = torrent["info"]
         elif b"info" in torrent:
             info = torrent[b"info"]
-        # info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
+        info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
         url=torrent["announce"].decode()
         query_params={
-            "info_hash":hashlib.sha1(bencode(torrent["info"])).digest(),
+            "info_hash":info_hashed,
             "port":6881,
             "peer_id": "00112233445566778899",
             "uploaded":0,
@@ -121,7 +120,7 @@ def main():
             "compact":1
         }
         response=requests.get(url,query_params)
-        interval,peers=decode_bencode(response.content)
+        peers=decode_bencode(response.content)
         for i in range(0, len(peers), 6):
             ip = ".".join(str(b) for b in peers[i : i + 4])
             port = int.from_bytes(peers[i + 4 : i + 6], byteorder='big')

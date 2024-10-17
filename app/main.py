@@ -1,6 +1,7 @@
 import json
 import sys
 import hashlib
+import bencode
 import bencodepy 
 import requests
 # import requests - available if you need it!
@@ -111,7 +112,7 @@ def main():
         info_hashed = hashlib.sha1(bencodepy.encode(info)).hexdigest()
         url=torrent["announce"].decode()
         query_params={
-            "info_hash":info_hashed,
+            "info_hash":hashlib.sha1(bencode(torrent["info"])).digest(),,
             "port":6881,
             "peer_id": "00112233445566778899",
             "uploaded":0,

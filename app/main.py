@@ -116,7 +116,7 @@ def main():
             "peer_id": "00112233445566778899",
             "uploaded":0,
             "downloaded":0,
-            "left":torrent["info"]["piece length"],
+            "left":torrent["info"]["length"],
             "compact":1
         }
         response=requests.get(url,query_params)

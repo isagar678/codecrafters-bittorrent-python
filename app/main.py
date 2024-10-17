@@ -130,8 +130,8 @@ def main():
             if isinstance(peers, bytes):  # Ensure it’s a bytes object
             # Process the compact peer format
                 for i in range(0, len(peers), 6):
-                    ip = ".".join(str(b) for b in peers[i : i + 4])
-                    port = struct.unpack("!H", peers[i + 4 : i + 6])[0]
+                    ip = ".".join(str(b) for b in peers[i:i + 4])
+                    port = int.from_bytes(peers[i + 4:i + 6], byteorder='big')
                     print(f"Peer: {ip}:{port}")
             else:
                 print("Error: Expected byte string for peers, got:", type(peers))
